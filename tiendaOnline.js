@@ -153,8 +153,13 @@ eldenTotal =  JSON.parse(localStorage.getItem("eldenUnidadesStorage")) * 4800;
 
 totales =  minecraftTotal + legoTotal + gta5Total + eldenTotal;
 
-const sumaTotal = document.querySelector("#resultado")
-const  sumaTotalTexto = document.createElement("sumaTotalTexto")
-sumaTotalTexto.innerHTML = `
-    <p>El precio total es de $ ${totales}. Llevas  ${(minecraftUnidades || 0)}  ${arrayJuegos[0].nombre }, ${(gta5Unidades || 0)}  ${arrayJuegos[1].nombre} ${(legoUnidades || 0)}  ${arrayJuegos[2].nombre}  ${(eldenUnidades || 0)} ${arrayJuegos[3].nombre}.</p>`
-sumaTotal.append(sumaTotalTexto);
+const sumaTotal = document.getElementById(resultado)
+
+function crearResultado(){
+    const  div = document.createElement("div")
+    div.innerHTML = 
+        `<p>El precio total es de $ ${totales}. Llevas ${(minecraftUnidades || 0)} ${arrayJuegos[0].nombre }, ${(gta5Unidades || 0)}, ${arrayJuegos[1].nombre} ${(legoUnidades || 0)}  ${arrayJuegos[2].nombre},  ${(eldenUnidades || 0)} ${arrayJuegos[3].nombre}.</p>`
+    sumaTotal.appendChild(div);
+}
+
+crearResultado();
