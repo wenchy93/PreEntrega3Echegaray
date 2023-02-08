@@ -18,53 +18,143 @@ let elden = new Juegos(4, "Elden Ring", 4800);
 
 //Array original que contiene la lista de juegos
 const  arrayJuegos = [minecraft, gta5, lego, elden];
+//localStorage.setItem(arrayStorage, JSON.stringify(arrayJuegos))
 
 // Carrito de comprar al cual se le van a sumar los juegos que se vayan seleccionando.
 const carrito = [];
 // Variable que permite seleccionar que juego agregar segun su id.
 let agregarJuego = 0;
 
+const catalogoProductos = document.querySelector("#contenedorProductos");
 
-//Funcion que pregunta al usuario la cantidad de copias de un juego que desea adquirir y se asegura que no se ingrese un valor no numerico.
-const pregunta1 = (nombre, precio) => {
-    let cantidad ="";
-    while (isNaN(cantidad) || cantidad === "") {
-        cantidad = prompt("Cuantas copias de " + nombre + " quieres adquirir. Su precio es de " + precio);
-    }
-    parseInt(cantidad) || 0;
-    return cantidad;    
+//funcion que carga los productos disponibles haciendo uso del DOM 
+function cargarProductos() {
+    arrayJuegos.forEach(producto => {
+        const div = document.createElement("div");
+        div.classList.add("producto")
+        div.innerHTML = `
+            <h3>${producto.nombre} $${producto.precioJuego}</h3>
+            <button class = "agregar" id = "agregar${producto.id}">Agregar</button>
+            <button class = "eliminar" id = "eliminar${producto.id}">Eliminar</button>
+        `
+        catalogoProductos.append(div);
+    } )
+} 
+
+cargarProductos();
+
+// arrays que contienen la informacion de cada copia del mismo juego en la sesion
+const arrayMinecraft = [];
+const arrayGta5 = [];
+const arrayLego = [];
+const arrayElden = [];
+
+localStorage.setItem("arrayMinecraftStorage", JSON.stringify(arrayMinecraft));
+localStorage.setItem("arrayGta5Storage", JSON.stringify(arrayGta5));
+localStorage.setItem("arrayLegoStorage", JSON.stringify(arrayLego));
+localStorage.setItem("arrayEldenStorage", JSON.stringify(arrayElden));
+
+
+const botonAgregar = document.querySelectorAll(".agregar");
+const botonQuitar = document.querySelectorAll(".eliminar");
+
+// AGREGAR AL CARRITO
+function funcionAgregar() {
+    botonAgregar.forEach(boton => {
+        boton.addEventListener("click", agregarAlCarrito)
+    });
 }
 
-// Funcion que realiza al usuario 4 preguntas por cada juego disponible.
-arrayJuegos.forEach(element => {
-    let cantidad = pregunta1(element.nombre, element.precioJuego);
-    
-    // Bucle que agrega un juego al nuevo array por cada unidad deseada utilizando el valor que se almacena en cantidad.
-    for (let index = 0; index < cantidad ; index++) {
-        carrito.push(arrayJuegos[agregarJuego]);
-        
+function agregarAlCarrito(e) {
+    const idBoton = e.currentTarget.id;
+    console.log(idBoton);
+    if (idBoton === "agregar1") {
+        let arrayPush1 = JSON.parse(localStorage.getItem("arrayMinecraftStorage"));
+        arrayPush1.push(arrayJuegos[0]);
+        localStorage.setItem("arrayMinecraftStorage", JSON.stringify(arrayPush1));
+        let aumentar = JSON.parse(localStorage.getItem("minecraftUnidadesStorage"))
+        aumentar++;
+        localStorage.setItem("minecraftUnidadesStorage", JSON.stringify(aumentar));
     }
-    // el numero de id de cada juego a agregar se modifica en cada ciclo del forEach
-    agregarJuego++;
-})
+    else if (idBoton === "agregar2"){
+        let arrayPush2 = JSON.parse(localStorage.getItem("arrayGta5Storage"));
+        arrayPush2.push(arrayJuegos[1]);
+        localStorage.setItem("arrayGta5Storage", JSON.stringify(arrayPush2));
+        let aumento = JSON.parse(localStorage.getItem("gta5UnidadesStorage"))
+        aumento++;
+        localStorage.setItem("gta5UnidadesStorage", JSON.stringify(aumento));
+        
 
-// arrays que contienen la informacion de cada copia del mismo juego
-const arrayMinecraft = carrito.filter(juego => juego.id === 1);
-const arrayGta5 = carrito.filter(juego => juego.id === 2);
-const arrayLego = carrito.filter(juego => juego.id === 3);
-const arrayElden = carrito.filter(juego => juego.id === 4);
+    }
+    else if (idBoton === "agregar3"){
+        let arrayPush3 = JSON.parse(localStorage.getItem("arrayLegoStorage"));
+        arrayPush3.push(arrayJuegos[2]);
+        localStorage.setItem("arrayLegoStorage", JSON.stringify(arrayPush3));
+        let aumentar = JSON.parse(localStorage.getItem("legoUnidadesStorage"))
+        aumentar++;
+        localStorage.setItem("legoUnidadesStorage", JSON.stringify(aumentar));
+    }
+    else if (idBoton === "agregar4"){
+        let arrayPush4 = JSON.parse(localStorage.getItem("arrayEldenStorage"));
+        arrayPush4.push(arrayJuegos[3]);
+        localStorage.setItem("arrayEldenStorage", JSON.stringify(arrayPush4));
+        let aumentar = JSON.parse(localStorage.getItem("eldenUnidadesStorage"))
+        aumentar++;
+        localStorage.setItem("eldenUnidadesStorage", JSON.stringify(aumentar));
+    }
+}
 
-//Variables que almacenan la cantidad de copias de un mismo juego
- let minecraftUnidades = arrayMinecraft.length;
- let gta5Unidades = arrayGta5.length;
- let legoUnidades = arrayLego.length;
- let eldenUnidades = arrayElden.length;
+/////// QUITAR DEL CARRITO
+function funcionQuitar() {
+    botonAgregar.forEach(boton => {
+        boton.addEventListener("click", quitarDelCarrito)
+    });
+}
 
-totales = carrito.reduce((total, actual) => 
-    total + actual.precioJuego, 0
-);
+function quitarDelCarrito(e) {
+    const idBoton = e.currentTarget.id;
+    console.log(idBoton);
+    if (idBoton === "eliminar1") {
+        let reducir = JSON.parse(localStorage.getItem("minecraftUnidadesStorage"))
+        reducir--;
+        localStorage.setItem("minecraftUnidadesStorage", JSON.stringify(reducir));
+    }
+    else if (idBoton === "eliminar2"){
+        let reducir = JSON.parse(localStorage.getItem("gta5UnidadesStorage"))
+        reducir--;
+        localStorage.setItem("gta5UnidadesStorage", JSON.stringify(reducir));
+        
 
-console.log("total"  + totales)
+    }
+    else if (idBoton === "eliminar3"){
+        let reducir = JSON.parse(localStorage.getItem("legoUnidadesStorage"))
+        reducir--;
+        localStorage.setItem("legoUnidadesStorage", JSON.stringify(reducir));
+    }
+    else if (idBoton === "eliminar4"){
+        let reducir = JSON.parse(localStorage.getItem("eldenUnidadesStorage"))
+        reducir--;
+        localStorage.setItem("eldenUnidadesStorage", JSON.stringify(reducir));
+    }
+}
 
-//Alerta Final que muestra el total de la compra y cuantas unidades se estan llevando por juego
-alert("El precio total es de $" + totales + ". Llevas " + (minecraftUnidades || 0) + " " + arrayJuegos[0].nombre + ", " + (gta5Unidades || 0) + " " + arrayJuegos[1].nombre + ", " + (legoUnidades || 0) + " " + arrayJuegos[2].nombre + ", " + (eldenUnidades || 0) + " " + arrayJuegos[3].nombre + ".");
+funcionAgregar();
+funcionQuitar();
+
+
+
+
+
+
+minecraftTotal= JSON.parse(localStorage.getItem("minecraftUnidadesStorage")) * 500
+legoTotal =  JSON.parse(localStorage.getItem("legoUnidadesStorage")) * 3000;
+gta5Total = JSON.parse(localStorage.getItem("gta5UnidadesStorage")) * 1200;
+eldenTotal =  JSON.parse(localStorage.getItem("eldenUnidadesStorage")) * 4800;
+
+totales =  minecraftTotal + legoTotal + gta5Total + eldenTotal;
+
+const sumaTotal = document.querySelector("#resultado")
+const  sumaTotalTexto = document.createElement("sumaTotalTexto")
+sumaTotalTexto.innerHTML = `
+    <p>El precio total es de $ ${totales}. Llevas  ${(minecraftUnidades || 0)}  ${arrayJuegos[0].nombre }, ${(gta5Unidades || 0)}  ${arrayJuegos[1].nombre} ${(legoUnidades || 0)}  ${arrayJuegos[2].nombre}  ${(eldenUnidades || 0)} ${arrayJuegos[3].nombre}.</p>`
+sumaTotal.append(sumaTotalTexto);
